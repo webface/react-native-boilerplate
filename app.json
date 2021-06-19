@@ -1,0 +1,16 @@
+{
+  "name": "react-native-boilerplate",
+  "displayName": "react-native-boilerplate",
+  "expo": {
+    "scheme": "react-native-boilerplate",
+    "name": "react-native-boilerplate",
+    "slug": "react-native-boilerplate",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "splash": {
+      "image": "./assets/images/splash.png"
+    }
+  }
+}
