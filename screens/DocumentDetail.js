@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   Dimensions,
+  Alert,
 } from "react-native";
 import Button from "../components/Button";
 import { Entypo, AntDesign } from "@expo/vector-icons";
@@ -49,6 +50,25 @@ export default function DocumentDetail({ route, navigation }) {
     },
     refetchQueries: [{ query: DOCUMENTS_QUERY }],
   });
+  const confirmDelete = () => {
+    return Alert.alert(
+      "Are you sure?",
+      `Are you sure you want to delete ${title} ?`,
+      [
+        { text: "No" },
+        {
+          text: "Yes",
+          onPress: () => {
+            deleteDoc({
+              variables: {
+                documentId: _id,
+              },
+            });
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -94,13 +114,7 @@ export default function DocumentDetail({ route, navigation }) {
             text="Delete"
             textColor="#FFFFFF"
             backgroundColor="rgba(75, 148, 214, 1)"
-            onPress={() => {
-              deleteDoc({
-                variables: {
-                  documentId: _id,
-                },
-              });
-            }}
+            onPress={() => confirmDelete()}
             icon={
               <AntDesign
                 name="delete"
