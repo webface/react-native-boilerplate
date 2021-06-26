@@ -11,6 +11,14 @@
     ],
     "splash": {
       "image": "./assets/images/splash.png"
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "supportsTablet": true
     }
   }
 }

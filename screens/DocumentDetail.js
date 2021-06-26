@@ -10,11 +10,45 @@ import {
 } from "react-native";
 import Button from "../components/Button";
 import { Entypo, AntDesign } from "@expo/vector-icons";
+import gql from "graphql-tag";
+import { ToastContext } from "../providers/ToastProvider";
+import { DOCUMENTS_QUERY } from "./HomeScreen";
+import { useMutation } from "@apollo/react-hooks";
+import { useContext } from "react";
+
 const { width } = Dimensions.get("window");
+
+const DELETE_MUTATION = gql`
+  mutation deleteDocument($documentId: ID!) {
+    deleteDocument(documentId: $documentId) {
+      _id
+    }
+  }
+`;
 export default function DocumentDetail({ route, navigation }) {
   const { params } = route;
   const { document } = params;
   const { _id, title, createdAt, content, status } = document;
+
+  const { show } = useContext(ToastContext);
+  const [deleteDoc] = useMutation(DELETE_MUTATION, {
+    async onCompleted({ deleteDocument }) {
+      try {
+        const { _id } = deleteDocument;
+        navigation.navigate("Home");
+      } catch (err) {
+        console.log(err.message);
+      }
+    },
+    onError({ graphQLErrors, networkError }) {
+      show({
+        message:
+          (networkError?.result?.errors[0] || graphQLErrors[0]).message ||
+          "Something went wrong",
+      });
+    },
+    refetchQueries: [{ query: DOCUMENTS_QUERY }],
+  });
 
   return (
     <ScrollView style={styles.container}>
@@ -60,7 +94,13 @@ export default function DocumentDetail({ route, navigation }) {
             text="Delete"
             textColor="#FFFFFF"
             backgroundColor="rgba(75, 148, 214, 1)"
-            onPress={() => {}}
+            onPress={() => {
+              deleteDoc({
+                variables: {
+                  documentId: _id,
+                },
+              });
+            }}
             icon={
               <AntDesign
                 name="delete"
